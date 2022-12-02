@@ -1,0 +1,23 @@
+---
+layout: false
+permalink: "{{ page.fileSlug }}"
+eleventyExcludeFromCollections: true
+---
+{
+	"projects": [
+	{%- for project in collections.projects %}
+		{
+			"url": "{{ project.url }}",
+			"title": "{{ project.data.title }}",
+			"desc": "{{ project.data.desc }}",
+			"tags": [
+			{%- for tag in project.data.tags %}
+				{%- if tag != "projects" %}
+				"{{ tag }}"{%- if not loop.last %},{% endif %}
+				{%- endif -%}
+			{%- endfor %}
+			]
+		}{% if not loop.last %},{% endif %}
+	{%- endfor %}
+	]
+}

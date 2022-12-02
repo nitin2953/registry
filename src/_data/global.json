@@ -1,0 +1,6 @@
+{
+	"links": [
+		{"text": "Home", "url": "/"},
+		{"text": "Projects", "url": "/projects/"}
+	]
+}

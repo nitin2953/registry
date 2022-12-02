@@ -1,0 +1,22 @@
+{% extends "base.njk" %}
+
+{% block content %}
+
+	<main>
+
+		<header id="hero">
+			<h1>{{ title }}</h1>
+			<p>{{ desc }}</p>
+			<ul>
+				{%- for item in tags %}
+				<li>{{ item }}</li> {# TODO: remove "project" tag #}
+				{%- endfor %}
+			</ul>
+		</header>
+		<article>
+			{{ content | safe }}
+		</article>
+
+	</main>
+
+{% endblock %}

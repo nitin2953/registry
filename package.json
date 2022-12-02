@@ -1,0 +1,24 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "main": "dist/index.html",
+  "scripts": {
+    "11ty:watch": "npx @11ty/eleventy --watch",
+    "11ty:serve": "npx @11ty/eleventy --serve",
+    "11ty:build": "npx @11ty/eleventy",
+
+    "sass:watch": "sass -w src/site/main.scss:dist/main.css",
+    "sass:build": "sass src/site/main.scss:dist/main.css",
+
+    "watch": "npm-run-all sass:build --parallel sass:watch 11ty:watch",
+    "serve": "npm-run-all sass:build --parallel sass:watch 11ty:serve",
+    "build": "npm-run-all sass:build 11ty:build"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.0-canary.18",
+    "dev-ip": "^1.0.1",
+    "npm-run-all": "^4.1.5",
+    "qrcode-terminal": "^0.12.0",
+    "sass": "^1.56.1"
+  }
+}

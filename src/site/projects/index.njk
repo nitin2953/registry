@@ -1,0 +1,45 @@
+---
+layout: base
+eleventyExcludeFromCollections: projects
+---
+
+<main id="grid">
+
+	<aside id="sidebar">
+		<header>
+			<strong>Category</strong>
+			<button id="checkbox-toggle">
+				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 30 30">
+					<path stroke="#555" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.5 16.5A6.5 6.5 0 1 0 15 10h-3m3-3-3 3m0 0 3 3"/>
+				</svg>
+			</button>
+		</header>
+
+		<div id="checkbox-container"></div>
+	</aside>
+
+	<div id="main">
+		<button id="sidebar-toggle">
+			Filter
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M3 7H21M6 12H18M10 17H14" stroke="#555" stroke-width="1.5"/>
+			</svg>
+		</button>
+
+		<div id="project-container"></div>
+
+		<div id="pagination-container">
+			<div id="pagination-info">1-6 of 18 Projects</div> <!-- `${1}-${6} of ${151} Projects` -->
+			<div id="pagination">
+				<button id="prev" disabled>←</button>
+				<a href="#" class="active">1</a>
+				<a href="#">2</a>
+				<a href="#">3</a>
+				<button id="next">→</button>
+			</div>
+		</div>
+	</div>
+
+</main>
+
+<script src="/main.js"></script>
