@@ -7,7 +7,7 @@ eleventyExcludeFromCollections: true
 	"projects": [
 	{%- for project in collections.projects %}
 		{
-			"url": "{{ project.url }}",
+			"url": "{{ project.url | url }}",
 			"title": "{{ project.data.title }}",
 			"desc": "{{ project.data.desc }}",
 			"tags": [

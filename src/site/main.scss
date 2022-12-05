@@ -247,14 +247,15 @@ article {
 	justify-content: space-between;
 }
 
-#pagination {
+#pagination-buttons {
 	align-self: end;
 	display: flex;
 	gap: 5px;
 
-	& > * {
+	& > button {
 		min-width: 20px;
 		padding: 5px;
+		border-radius: 0;
 		background-color: transparent;
 		color: inherit;
 		text-decoration: none;
@@ -263,9 +264,9 @@ article {
 		&:not(:disabled):hover {
 			background-color: #fff;
 		}
-	}
 
-	& > a.active {
-		box-shadow: inset 0 -2px rgba(0, 0, 255, .6);
+		&.active {
+			box-shadow: inset 0 -2px rgba(0, 0, 255, .6);
+		}
 	}
 }

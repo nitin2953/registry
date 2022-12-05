@@ -1,79 +1,132 @@
 const checkboxContainer = document.getElementById("checkbox-container")
 const projectContainer = document.getElementById("project-container")
+const buttonContainer = document.getElementById("pagination-buttons")
 
 let projectsData
-let uniqueTags = []
-
-
-function checkboxHTML(data) {
-	// data = data.toLowerCase()
-	return `<input type="checkbox" id="${data.replace(/\s/g, "-")}" name="${data}"/>${data}`
-}
-function cardHTML(data) {
-	return `<strong>${data.title}</strong><p>${data.desc}</p><div class="tags-list"><span>${data.tags.join("</span><span>")}</span></div>`
-	// return `<strong>${data.title}</strong><p>${data.desc}</p><div class="tags-list"><span>${data.tags.join("</span><span>").toLowerCase()}</span></div>`
+let state = {
+	array: [],
+	currPage: 1,
+	maxPage: 1,
+	pageSize: 6
 }
 
-
-function generateCheckboxes() {
-	uniqueTags = [...new Set(projectsData.flatMap(project => project.tags))]
-
-	uniqueTags.forEach(tag => {
-		let label = document.createElement("label")
-		label.innerHTML = checkboxHTML(tag)
-		checkboxContainer.appendChild(label)
-	})
-}
-function generateCards(data = projectsData) {
-	data.forEach(project => {
-		let card = document.createElement("a")
-		card.href = project.url
-		card.className = "card"
-		card.innerHTML = cardHTML(project)
-
-		projectContainer.appendChild(card)
-	})
+function setState(array) {
+	state.array = array
+	state.currPage = 1
+	state.maxPage = Math.ceil(array.length / state.pageSize)
 }
 
 
-async function fetchProjects() {
-	await fetch("/projects-data.json")
-		.then(res => res.json())
-		.then(json => projectsData = json.projects)
-
+fetch("/projects-data.json")
+.then(res => res.json())
+.then(json => {
+	projectsData = json.projects
+	setState(projectsData)
 	init()
-}
-fetchProjects()
+	utilities()
+})
+
 
 function init() {
-	generateCheckboxes()
-	generateCards()
-	work()
+	pagination()
 
-	utilities()
-}
+	uniqueTags = [...new Set(state.array.flatMap(project => project.tags))]
+	uniqueTags.forEach(tag => {
+		let label = document.createElement("label")
+		label.innerHTML = `<input type="checkbox" id="${tag.replace(/\s/g, "-")}" value="${tag}"/>${tag}`
+		checkboxContainer.appendChild(label)
+	})
 
-function work() {
 	const checkboxes = checkboxContainer.querySelectorAll("input[type=checkbox]")
+	checkboxes.forEach(cb => {
+		cb.onchange = () => {
+			const selectedCB = [...checkboxContainer.querySelectorAll("input[type=checkbox]:checked")].map(input => input.value)
 
-	checkboxes.forEach(checkbox => {
-		checkbox.onchange = () => {
-			const selectedTags = [...checkboxContainer.querySelectorAll("input[type=checkbox]:checked")].map(input => input.name)
+			if (selectedCB.length == 0) {
+				setState(projectsData)
+				pagination()
+				return
+			}
 
-			projectContainer.innerHTML = ""
-
-			if (selectedTags.length == 0) return generateCards()
-
-			let newArray = []
-			projectsData.forEach(project => {
-				if (project.tags.some(tag => {return selectedTags.indexOf(tag) > -1})) {
-					newArray.push(project)
-				}
-			})
-
-			generateCards(newArray)
+			const selectedProjects = projectsData.filter((project) =>
+				project.tags.some((tag) => selectedCB.includes(tag))
+			)
+			setState(selectedProjects)
+			pagination()
 		}
 	})
+}
+
+
+function pagination() {
+	function renderCards() {
+		projectContainer.innerHTML = ""
+
+		let trimed = state.array.slice((state.currPage - 1) * state.pageSize, state.currPage * state.pageSize)
+		trimed.forEach(project => {
+			let card = document.createElement("a")
+			card.href = project.url
+			card.className = "card"
+			card.innerHTML = `<strong>${project.title}</strong><p>${project.desc}</p><div class="tags-list"><span>${project.tags.join("</span><span>")}</span></div>`
+
+			projectContainer.appendChild(card)
+		})
+	}
+	renderCards()
+
+	function renderButtons() {
+		buttonContainer.innerHTML = ""
+
+		const prevButton = document.createElement("button")
+		prevButton.textContent = "←"
+		prevButton.onclick = () => {
+			state.currPage--
+			renderCards()
+			updateButtons()
+		}
+		buttonContainer.appendChild(prevButton)
+
+		let currentButton
+		let pageButtons = []
+		for (let i = 1; i <= state.maxPage; i++) {
+			const pageButton = document.createElement("button")
+			pageButton.textContent = i
+			pageButton.classList.add("page")
+			if (i === 1) {
+				pageButton.classList.add("active")
+				currentButton = pageButton
+			}
+			pageButton.addEventListener("click", () => {
+				state.currPage = i
+				renderCards()
+				updateButtons()
+			})
+			buttonContainer.appendChild(pageButton)
+			pageButtons.push(pageButton)
+		}
+
+		const nextButton = document.createElement("button")
+		nextButton.textContent = "→"
+		nextButton.onclick = () => {
+			state.currPage++
+			renderCards()
+			updateButtons()
+		}
+		buttonContainer.appendChild(nextButton)
+
+		function updateButtons() {
+			currentButton.classList.remove("active")
+			pageButtons[state.currPage - 1].classList.add("active")
+			currentButton = pageButtons[state.currPage - 1]
+
+			if (state.currPage === 1) prevButton.disabled = true
+			else prevButton.disabled = false
+			if (state.currPage === state.maxPage) nextButton.disabled = true
+			else nextButton.disabled = false
+		}
+		updateButtons()
+	}
+	renderButtons()
 }
 
 

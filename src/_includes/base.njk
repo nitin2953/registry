@@ -15,7 +15,7 @@
 			<a id="logo" href="/"><strong>REGISTRY</strong></a>
 			<menu>
 				{%- for item in global.links %}
-				<li><a href="{{ item.url }}">{{ item.text }}</a></li>
+				<li><a href="{{ item.url | url }}">{{ item.text }}</a></li>
 				{%- endfor %}
 			</menu>
 		</nav>
