@@ -1,6 +1,7 @@
 const checkboxContainer = document.getElementById("checkbox-container")
 const projectContainer = document.getElementById("project-container")
 const buttonContainer = document.getElementById("pagination-buttons")
+const paginationInfo = document.getElementById("pagination-info")
 
 let projectsData
 let state = {
@@ -83,6 +84,7 @@ function pagination() {
 			state.currPage--
 			renderCards()
 			updateButtons()
+				updateInfo()
 		}
 		buttonContainer.appendChild(prevButton)
 
@@ -100,6 +102,7 @@ function pagination() {
 				state.currPage = i
 				renderCards()
 				updateButtons()
+				updateInfo()
 			})
 			buttonContainer.appendChild(pageButton)
 			pageButtons.push(pageButton)
@@ -111,8 +114,10 @@ function pagination() {
 			state.currPage++
 			renderCards()
 			updateButtons()
+				updateInfo()
 		}
 		buttonContainer.appendChild(nextButton)
+
 
 		function updateButtons() {
 			currentButton.classList.remove("active")
@@ -125,6 +130,13 @@ function pagination() {
 			else nextButton.disabled = false
 		}
 		updateButtons()
+
+		function updateInfo() {
+			const startIndex = (state.currPage - 1) * state.pageSize + 1
+			const endIndex = Math.min(state.currPage * state.pageSize, state.array.length)
+			paginationInfo.textContent = `${startIndex}-${endIndex} of ${state.array.length} Projects`
+		}
+		updateInfo()
 	}
 	renderButtons()
 }
